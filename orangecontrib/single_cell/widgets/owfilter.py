@@ -28,6 +28,7 @@ import pyqtgraph as pg
 import Orange.data
 import Orange.widgets.utils.plot.owpalette
 from Orange.widgets import widget, gui, settings
+from Orange.widgets.visualize.utils.plotutils import GraphicsView, PlotItem, AxisItem
 
 #: Filter type
 Cells, Genes, Data = 0, 1, 2
@@ -287,10 +288,10 @@ class OWFilter(widget.OWWidget):
 
         gui.auto_commit(self.controlArea, self, "auto_commit", "Commit")
 
-        self._view = pg.GraphicsView()
+        self._view = GraphicsView()
         self._view.enableMouse(False)
         self._view.setAntialiasing(True)
-        self._plot = plot = ViolinPlot(axisItems={"left": pg.AxisItem("left")})
+        self._plot = plot = ViolinPlot(axisItems={"left": AxisItem("left")})
         self._plot.setDataPointsVisible(self.display_dotplot)
         self._plot.setSelectionMode(
             (ViolinPlot.Low if self.limit_lower_enabled else 0) |
@@ -767,7 +768,6 @@ class OWFilter(widget.OWWidget):
 
     def onDeleteWidget(self):
         self.clear()
-        self._plot.close()
         self._view.scene().clear()
         super().onDeleteWidget()
 
@@ -811,7 +811,7 @@ def block_signals(qobj):
         qobj.blockSignals(b)
 
 
-class ViolinPlot(pg.PlotItem):
+class ViolinPlot(PlotItem):
     """
     A violin plot item with interactive data boundary selection.
     """
